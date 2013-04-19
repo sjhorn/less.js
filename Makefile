@@ -19,6 +19,7 @@ VERSION = `cat package.json | grep version \
 														| grep -o '[0-9]\.[0-9]\.[0-9]\+'`
 DIST = dist/less-${VERSION}.js
 RHINO = dist/less-rhino-${VERSION}.js
+RHINO_LIB = dist/less-rhino-lib-${VERSION}.js
 DIST_MIN = dist/less-${VERSION}.min.js
 
 browser-prepare: DIST := test/browser/less.js
@@ -48,6 +49,19 @@ browser-test: browser-prepare
 
 browser-test-server: browser-prepare
 	phantomjs test/browser/phantom-runner.js --no-tests
+
+rhino-lib:
+	@@mkdir -p dist
+	@@touch ${RHINO_LIB}
+	@@cat build/require-rhino.js\
+	      build/ecma-5.js\
+	      ${SRC}/parser.js\
+	      ${SRC}/functions.js\
+	      ${SRC}/colors.js\
+	      ${SRC}/tree/*.js\
+	      ${SRC}/tree.js\
+	      ${SRC}/rhino-lib.js > ${RHINO_LIB}
+	@@echo ${RHINO_LIB} built.
 
 rhino:
 	@@mkdir -p dist
